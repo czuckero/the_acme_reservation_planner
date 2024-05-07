@@ -16,6 +16,7 @@ const app = express();
 app.use(express.json());
 app.use(require('morgan')('dev'));
 
+//READ CUSTOMERS
 app.get('/api/customers', async(req, res, next) => {
   try {
     res.send(await fetchCustomers());
@@ -24,6 +25,7 @@ app.get('/api/customers', async(req, res, next) => {
   };
 });
 
+// READ RESTAURANTS
 app.get('/api/restaurants', async(req, res, next) => {
   try {
     res.send(await fetchRestaurants());
@@ -32,6 +34,7 @@ app.get('/api/restaurants', async(req, res, next) => {
   };
 });
 
+// READ RESERVATIONS
 app.get('/api/reservations', async(req, res, next) => {
   try {
     res.send(await fetchReservations());
@@ -40,6 +43,20 @@ app.get('/api/reservations', async(req, res, next) => {
   };
 });
 
+// DESTROY RESERVATION
+app.delete('/api/customers/:customer_id/reservations/:id', async( req, res, next) => {
+  try {
+    await destroyReservation({
+      customer_id: req.params.customer_id,
+      id: req.params.id
+    });
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// CREATE RESERVATION
 app.post('/api/customers/:customer_id/reservations', async(req, res, next) => {
   try {
     res.sendStatus(201).send(await createReservation({
@@ -102,7 +119,9 @@ const init = async () => {
   // await destroyReservation({id: reservation1.id, customer_id: reservation1.customer_id})
   console.log(await fetchReservations());
 
-  console.log(`curl -X POST localhost:${port}/api/customers/${gary.id}/reservations/ -d '{"restaurant_id":"${alinea.id}", "party_count": 5, "date": "02/15/2025"}' -H "Content-Type:application/json"`);
+  // curl commands
+  console.log(`curl -X DELETE localhost:${port}/api/customers/${gary.id}/reservations/${reservation2.id}`);
+  console.log(`curl -X POST localhost:${port}/api/customers/${buddie.id}/reservations/ -d '{"restaurant_id":"${mcdonalds.id}", "party_count": 17, "date": "02/15/2025"}' -H "Content-Type:application/json"`);
 };
 
 init();
