@@ -7,9 +7,9 @@ const uuid = require("uuid");
 
 const createTables = async () => {
   const SQL = /* sql */`
-    DROP TABLE IF EXISTS customers CASCADE;
-    DROP TABLE IF EXISTS restaurants CASCADE;
-    DROP TABLE IF EXISTS reservations CASCADE;
+    DROP TABLE IF EXISTS reservations;
+    DROP TABLE IF EXISTS customers;
+    DROP TABLE IF EXISTS restaurants;
 
     CREATE TABLE customers(
       id UUID PRIMARY KEY,
