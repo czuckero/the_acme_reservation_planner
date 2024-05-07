@@ -70,6 +70,10 @@ app.post('/api/customers/:customer_id/reservations', async(req, res, next) => {
   };
 });
 
+app.use((error, req, res, next) => {
+  res.status(res.status || 500).send({ error: error });
+});
+
 const init = async () => {
   await client.connect();
   console.log('connected to database');
