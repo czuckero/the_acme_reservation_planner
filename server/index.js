@@ -6,11 +6,52 @@ const {
   fetchCustomers,
   fetchRestaurants,
   createReservation,
+  fetchReservations,
   destroyReservation
 } = require('./db');
 
 const express = require('express');
 const app = express();
+
+app.use(express.json());
+app.use(require('morgan')('dev'));
+
+app.get('/api/customers', async(req, res, next) => {
+  try {
+    res.send(await fetchCustomers());
+  } catch (error) {
+    next(error)
+  };
+});
+
+app.get('/api/restaurants', async(req, res, next) => {
+  try {
+    res.send(await fetchRestaurants());
+  } catch (error) {
+    next(error)
+  };
+});
+
+app.get('/api/reservations', async(req, res, next) => {
+  try {
+    res.send(await fetchReservations());
+  } catch (error) {
+    next(error)
+  };
+});
+
+app.post('/api/customers/:customer_id/reservations', async(req, res, next) => {
+  try {
+    res.sendStatus(201).send(await createReservation({
+      customer_id: req.params.customer_id,
+      restaurant_id: req.body.restaurant_id,
+      party_count: req.body.party_count,
+      date: req.body.date
+    }))
+  } catch (error) {
+    next(error)
+  };
+});
 
 const init = async () => {
   await client.connect();
@@ -58,7 +99,10 @@ const init = async () => {
     })
   ]);
 
-  
+  // await destroyReservation({id: reservation1.id, customer_id: reservation1.customer_id})
+  console.log(await fetchReservations());
+
+  console.log(`curl -X POST localhost:${port}/api/customers/${gary.id}/reservations/ -d '{"restaurant_id":"${alinea.id}", "party_count": 5, "date": "02/15/2025"}' -H "Content-Type:application/json"`);
 };
 
 init();
